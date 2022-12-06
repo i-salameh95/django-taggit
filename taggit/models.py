@@ -6,13 +6,10 @@ from django.utils.text import slugify
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
+from unidecode import unidecode
+from django.template import defaultfilters
+from unidecode import unidecode
 
-try:
-    from unidecode import unidecode
-except ImportError:
-
-    def unidecode(tag):
-        return tag
 
 
 class TagBase(models.Model):
@@ -76,7 +73,7 @@ class TagBase(models.Model):
 
     def slugify(self, tag, i=None):
         if getattr(settings, "TAGGIT_STRIP_UNICODE_WHEN_SLUGIFYING", False):
-            slug = slugify(unidecode(tag))
+            slug = defaultfilters.slugify(unidecode(tag))
         else:
             slug = slugify(tag, allow_unicode=True)
         if i is not None:
